@@ -46,10 +46,12 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT: 
                 return
-        screen.blit(bg_img, [0, 0]) 
+        screen.blit(bg_img, [0, 0])
+        if kk_rct.colliderect(bb_rct):  # こうかとんと爆弾が重なっていたら
+            return
 
         key_lst = pg.key.get_pressed()
-        sum_mv = [0, 0]
+        sum_mv = [0, 0]  # 縦座標, 横座標
         #if key_lst[pg.K_UP]:
         #    sum_mv[1] -= 5
         #if key_lst[pg.K_DOWN]:
@@ -63,11 +65,11 @@ def main():
                 sum_mv[0] += tpl[0]  # 横方向
                 sum_mv[1] += tpl[1]  # 縦方向
         kk_rct.move_ip(sum_mv)
-        if check_bound(kk_rct) != (True, True):
+        if check_bound(kk_rct) != (True, True):  # 爆弾が画面外に行かないように
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
         screen.blit(kk_img, kk_rct)
         bb_rct.move_ip(vx, vy)
-        yoko, tate = check_bound(bb_rct)  # 爆弾が画面外に行かないように
+        yoko, tate = check_bound(bb_rct)
         if not yoko:
             vx *= -1
         if not tate:

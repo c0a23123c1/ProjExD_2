@@ -1,6 +1,7 @@
 import os
 import random
 import sys
+import time
 import pygame as pg
 
 
@@ -27,6 +28,22 @@ def check_bound(obj_rct:pg.Rect) -> tuple[bool, bool]:
     return yoko, tate
 
 
+def game_over(screen, sub_kk_rct):
+    go_img = pg.Surface((WIDTH,HEIGHT)) # ゲーム終了時の背景画面作成
+    pg.draw.rect(go_img, (0, 0, 0), pg.Rect(0,0,1100, 650))
+    go_img.set_alpha(155)
+    screen.blit(go_img, [0, 0])
+
+    fonto = pg.font.Font(None, 80)  # 文字の追加
+    txt = fonto.render("Game Over", True, (255, 0, 0))
+    rect = txt.get_rect(center = (WIDTH // 2, HEIGHT // 2))
+    screen.blit(txt, rect)
+
+    sub_kk = pg.transform.rotozoom(pg.image.load("fig/8.png"), 0, 1)  # こうかとんの追加
+    screen.blit(sub_kk, sub_kk_rct)
+    pg.display.update()
+
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -34,13 +51,14 @@ def main():
     kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9)
     kk_rct = kk_img.get_rect()
     kk_rct.center = 300, 200
-    bb_img = pg.Surface((20, 20))
+    bb_img = pg.Surface((20, 20))  # 爆弾作成
     pg.draw.circle(bb_img, (255, 0, 0), (10, 10),  10)
     bb_img.set_colorkey((0, 0, 0))
     bb_rct = bb_img.get_rect()
     bb_rct.center = random.randint(0, WIDTH), random.randint(0, HEIGHT)
-    vx, vy = +5, -5  # 爆弾の速度
+    vx, vy = +5, -5  # 爆弾の速度 
     clock = pg.time.Clock()
+    sub_kk_rct = kk_rct
     tmr = 0
     while True:
         for event in pg.event.get():
@@ -48,6 +66,8 @@ def main():
                 return
         screen.blit(bg_img, [0, 0])
         if kk_rct.colliderect(bb_rct):  # こうかとんと爆弾が重なっていたら
+            game_over(screen, sub_kk_rct)
+            time.sleep(5)
             return
 
         key_lst = pg.key.get_pressed()

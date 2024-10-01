@@ -29,6 +29,9 @@ def check_bound(obj_rct:pg.Rect) -> tuple[bool, bool]:
 
 
 def game_over(screen, sub_kk_rct):
+    """
+    ゲーム失敗時の画面の関数
+    """
     go_img = pg.Surface((WIDTH,HEIGHT)) # ゲーム終了時の背景画面作成
     pg.draw.rect(go_img, (0, 0, 0), pg.Rect(0,0,1100, 650))
     go_img.set_alpha(155)
